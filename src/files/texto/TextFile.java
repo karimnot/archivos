@@ -8,7 +8,6 @@ package files.texto;
 import files.GenericFile;
 import files.Modo;
 import files.exception.ModoAperturaIncorrectoException;
-import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
@@ -25,17 +24,16 @@ public class TextFile extends GenericFile {
 
     private FileWriter writer;
     private FileReader reader;
-    private Modo modo;
 
-    public TextFile(String archivo, Modo modo) throws IOException, IOException, FileNotFoundException, ModoAperturaIncorrectoException {
-        super(archivo);
-        this.modo = modo;
+    public TextFile(String filename, Modo modo) throws IOException, IOException, FileNotFoundException, ModoAperturaIncorrectoException {
+        super(filename);
+        super.setMode(modo);
         openFile(modo);
     }
 
     public void changeMode(Modo modo) throws IOException, IOException, ModoAperturaIncorrectoException {
-        if (this.modo != modo) {
-            switch (this.modo) {
+        if (getMode() != modo) {
+            switch (getMode()) {
                 case READ:
                     reader.close();
                     break;
@@ -46,7 +44,7 @@ public class TextFile extends GenericFile {
                     throw new ModoAperturaIncorrectoException();
             }
             openFile(modo);
-            this.modo = modo;
+            setMode(modo);
         }
     }
 
@@ -76,52 +74,46 @@ public class TextFile extends GenericFile {
     }
 
     public String ReadLn() throws IOException, ModoAperturaIncorrectoException {
-        if (modo == Modo.READ) {
-            StringBuilder salida = new StringBuilder();
-            int ascii = reader.read();
-            while ((ascii != -1) && (ascii != EOL)) {
-                salida.append((char) ascii);
-                ascii = reader.read();
-            }
-            if (ascii == -1) {
-                return null;
-            }
-            return salida.toString();
+        super.validateOperation(Modo.READ);
+        StringBuilder salida = new StringBuilder();
+        int ascii = reader.read();
+        while ((ascii != -1) && (ascii != EOL)) {
+            salida.append((char) ascii);
+            ascii = reader.read();
         }
-        throw new ModoAperturaIncorrectoException();
+        if (ascii == -1) {
+            return null;
+        }
+        return salida.toString();
     }
 
     public String readWord() throws IOException, ModoAperturaIncorrectoException {
-        if (modo == Modo.READ) {
-            StringBuilder salida = new StringBuilder();
-            int ascii = 0;
-            do {
+        super.validateOperation(Modo.READ);
+        StringBuilder salida = new StringBuilder();
+        int ascii = 0;
+        do {
+            ascii = reader.read();
+            while ((ascii != -1) && (ascii != EOL) && (ascii != SPACE)) {
+                salida.append((char) ascii);
                 ascii = reader.read();
-                while ((ascii != -1) && (ascii != EOL) && (ascii != SPACE)) {
-                    salida.append((char) ascii);
-                    ascii = reader.read();
-                }
-            } while ((salida.length() == 0) && ((ascii != -1)));
-            if (ascii == -1) {
-                return null;
             }
-            return salida.toString();
+        } while ((salida.length() == 0) && ((ascii != -1)));
+        if (ascii == -1) {
+            return null;
         }
-        throw new ModoAperturaIncorrectoException();
+        return salida.toString();
     }
 
     public Character readChar() throws IOException, ModoAperturaIncorrectoException {
-        if (modo == Modo.READ) {
-            int ascii = reader.read();
-            return ascii == -1 ? null : new Character((char) ascii);
-        }
-        throw new ModoAperturaIncorrectoException();
+        super.validateOperation(Modo.READ);
+        int ascii = reader.read();
+        return ascii == -1 ? null : new Character((char) ascii);
     }
 
     private void write(String text, String formato) throws IOException, ModoAperturaIncorrectoException {
-        if (modo == Modo.APPEND) {
+        if (getMode() == Modo.APPEND) {
             writer.append(String.format(formato, text));
-        } else if (modo == Modo.REWRITE) {
+        } else if (getMode() == Modo.REWRITE) {
             writer.write(String.format(formato, text));
         } else {
             throw new ModoAperturaIncorrectoException();

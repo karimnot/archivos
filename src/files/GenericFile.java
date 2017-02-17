@@ -5,6 +5,7 @@
  */
 package files;
 
+import files.exception.ModoAperturaIncorrectoException;
 import java.io.File;
 
 /**
@@ -14,18 +15,34 @@ import java.io.File;
 public class GenericFile {
     
     private File file;
+    private Modo mode;
     
     public GenericFile(String file){
         this.file = new File(file);
     }
+    
+    protected void validateOperation(Modo modo) throws ModoAperturaIncorrectoException {
+        if (getMode() != modo) {
+            throw new ModoAperturaIncorrectoException();
+        }
+    }
 
-    public File getFile() {
+    protected File getFile() {
         return file;
     }
 
-    public void setFile(File file) {
+    protected void setFile(File file) {
         this.file = file;
     }
+
+    protected Modo getMode() {
+        return mode;
+    }
+
+    protected void setMode(Modo mode) {
+        this.mode = mode;
+    }
+    
     
     
 }

@@ -5,6 +5,7 @@
  */
 package files.texto;
 
+import files.exception.ModoAperturaIncorrectoException;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
@@ -54,10 +55,6 @@ public class TextFile {
         }
     }
 
-    public void reset() throws IOException {
-
-    }
-
     private void abrirArchivo(Modo modo) throws FileNotFoundException, IOException {
         switch (modo) {
             case READ:
@@ -72,7 +69,7 @@ public class TextFile {
         }
     }
 
-    public String leerLinea() throws IOException {
+    public String leerLinea() throws IOException, ModoAperturaIncorrectoException {
         if (modo == Modo.READ) {
             StringBuilder salida = new StringBuilder();
             int ascii = reader.read();
@@ -85,10 +82,10 @@ public class TextFile {
             }
             return salida.toString();
         }
-        return null;
+        throw new ModoAperturaIncorrectoException();
     }
 
-    public String leerPalabra() throws IOException {
+    public String leerPalabra() throws IOException, ModoAperturaIncorrectoException {
         if (modo == Modo.READ) {
             StringBuilder salida = new StringBuilder();
             int ascii = 0;
@@ -98,41 +95,43 @@ public class TextFile {
                     salida.append((char) ascii);
                     ascii = reader.read();
                 }
-            } while ((salida.length() == 0)&& ((ascii != -1)));
+            } while ((salida.length() == 0) && ((ascii != -1)));
             if (ascii == -1) {
                 return null;
             }
             return salida.toString();
         }
-        return null;
+        throw new ModoAperturaIncorrectoException();
     }
-    
-    public Character leerCaracter() throws IOException{
+
+    public Character leerCaracter() throws IOException, ModoAperturaIncorrectoException {
         if (modo == Modo.READ) {
             int ascii = reader.read();
-            return ascii == -1 ? null : new Character((char)ascii);
+            return ascii == -1 ? null : new Character((char) ascii);
         }
-        return null;
+        throw new ModoAperturaIncorrectoException();
     }
-    
-    private void write(String text, String formato) throws IOException{
+
+    private void write(String text, String formato) throws IOException, ModoAperturaIncorrectoException {
         if (modo == Modo.APPEND) {
             writer.append(String.format(formato, text));
         } else if (modo == Modo.REWRITE) {
             writer.write(String.format(formato, text));
-        }        
+        } else {
+            throw new ModoAperturaIncorrectoException();
+        }
     }
 
-    public void escribirLinea(String text) throws IOException {
+    public void escribirLinea(String text) throws IOException, ModoAperturaIncorrectoException {
         write(text, "%s\n");
     }
-    
-    public void escribir(String text) throws IOException {
+
+    public void escribir(String text) throws IOException, ModoAperturaIncorrectoException {
         write(text, "%s");
     }
-    
-    public void escribir(char character) throws IOException{
-        write(String.valueOf(character),"%s");
+
+    public void escribir(char character) throws IOException, ModoAperturaIncorrectoException {
+        write(String.valueOf(character), "%s");
     }
 
     @Override

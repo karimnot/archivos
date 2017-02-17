@@ -11,10 +11,20 @@ import java.io.File;
  *
  * @author karimnot
  */
-public abstract class FileAbstract extends File {
+public class GenericFile {
     
-    public FileAbstract(String file){
-        super(file);
+    private File file;
+    
+    public GenericFile(String file){
+        this.file = new File(file);
+    }
+
+    public File getFile() {
+        return file;
+    }
+
+    public void setFile(File file) {
+        this.file = file;
     }
     
     

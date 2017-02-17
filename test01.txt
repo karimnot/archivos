@@ -1,3 +1,0 @@
-La linea debe ser independiente
-Esta linea debe estar acompañada de la siguiente ---> K
- Se agrega una linea más 

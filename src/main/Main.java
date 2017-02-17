@@ -7,12 +7,15 @@ package main;
 
 import files.exception.ModoAperturaIncorrectoException;
 import files.Modo;
+import files.binarios.BinaryFile;
 import files.texto.TextFile;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
@@ -26,88 +29,84 @@ public class Main {
     public static void main(String[] args) {
         try {
 
-            File file = new File("archivo.pdf");
-            FileInputStream input = new FileInputStream(file);
-
-            File file2 = new File("archivo2.pdf");
-
-            FileOutputStream output = new FileOutputStream(file2);
-
-            while (input.available() > 0) {
-                int a = input.read();
-                System.out.println(a);
-                output.write(a);
-            }
-
-            input.close();
-            output.close();
+            ejemploBinaryFile();
         } catch (IOException ex) {
             ex.printStackTrace();
+        } catch (ModoAperturaIncorrectoException ex) {
+            Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
         }
 
     }
+    
+    public static void ejemploBinaryFile() throws FileNotFoundException, ModoAperturaIncorrectoException, IOException{
+        BinaryFile origen = new BinaryFile("archivo.pdf", Modo.INPUT);
+        BinaryFile destino = new BinaryFile("archivo3.pdf", Modo.OUTPUT);
+        destino.writeByte(origen.readByteLeft());
+        origen.close();
+        destino.close();
+    }
 
-    public static void ejemploTextFile() throws IOException {
+    public static void ejemploTextFile() throws IOException, ModoAperturaIncorrectoException {
 
         TextFile text = new TextFile("test01.txt", Modo.REWRITE);
         try {
-            text.escribirLinea("La linea debe ser independiente");
-            text.escribir("Esta linea debe estar acompañada de la siguiente ---> ");
-            text.escribir('K');
+            text.writeLn("La linea debe ser independiente");
+            text.write("Esta linea debe estar acompañada de la siguiente ---> ");
+            text.write('K');
         } catch (ModoAperturaIncorrectoException ex) {
             ex.printStackTrace();
         }
-        text.cerrar();
+        text.close();
 
         TextFile text02 = new TextFile("test01.txt", Modo.APPEND);
         try {
-            text02.escribirLinea("\n Se agrega una linea más ");
+            text02.writeLn("\n Se agrega una linea más ");
         } catch (ModoAperturaIncorrectoException ex) {
             ex.printStackTrace();
         }
-        text02.cerrar();
+        text02.close();
 
         System.out.println("**************************");
 
         TextFile text03 = new TextFile("test01.txt", Modo.READ);
         try {
-            String linea = text03.leerLinea();
+            String linea = text03.ReadLn();
             while (linea != null) {
                 System.out.println(linea);
-                linea = text03.leerLinea();
+                linea = text03.ReadLn();
             }
         } catch (ModoAperturaIncorrectoException ex) {
             ex.printStackTrace();
         }
-        text03.cerrar();
+        text03.close();
 
         System.out.println("**************************");
 
         TextFile text04 = new TextFile("test01.txt", Modo.READ);
         try {
-            String linea = text04.leerPalabra();
+            String linea = text04.readWord();
             while (linea != null) {
                 System.out.println(linea);
-                linea = text04.leerPalabra();
+                linea = text04.readWord();
             }
         } catch (ModoAperturaIncorrectoException ex) {
             ex.printStackTrace();
         }
-        text04.cerrar();
+        text04.close();
 
         System.out.println("**************************");
 
         TextFile text05 = new TextFile("test01.txt", Modo.READ);
         try {
-            Character ch = text05.leerCaracter();
+            Character ch = text05.readChar();
             while (ch != null) {
                 System.out.println(ch);
-                ch = text05.leerCaracter();
+                ch = text05.readChar();
             }
         } catch (ModoAperturaIncorrectoException ex) {
             ex.printStackTrace();
         }
-        text05.cerrar();
+        text05.close();
     }
 
 }

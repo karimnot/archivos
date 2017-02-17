@@ -5,6 +5,7 @@
  */
 package files.texto;
 
+import files.GenericFile;
 import files.Modo;
 import files.exception.ModoAperturaIncorrectoException;
 import java.io.File;
@@ -17,37 +18,39 @@ import java.io.IOException;
  *
  * @author karimnot
  */
-public class TextFile {
+public class TextFile extends GenericFile {
 
     public static final Integer EOL = 10;
     public static final Integer SPACE = 32;
 
-    private final File file;
     private FileWriter writer;
     private FileReader reader;
     private Modo modo;
 
-    public TextFile(String archivo, Modo modo) throws IOException, IOException {
+    public TextFile(String archivo, Modo modo) throws IOException, IOException, FileNotFoundException, ModoAperturaIncorrectoException {
+        super(archivo);
         this.modo = modo;
-        file = new File(archivo);
-        abrirArchivo(modo);
+        openFile(modo);
     }
 
-    public void cambiarModo(Modo modo) throws IOException, IOException {
+    public void changeMode(Modo modo) throws IOException, IOException, ModoAperturaIncorrectoException {
         if (this.modo != modo) {
             switch (this.modo) {
                 case READ:
                     reader.close();
                     break;
-                default:
+                case REWRITE:
+                case APPEND:
                     writer.close();
+                default:
+                    throw new ModoAperturaIncorrectoException();
             }
-            abrirArchivo(modo);
+            openFile(modo);
             this.modo = modo;
         }
     }
 
-    public void cerrar() throws IOException {
+    public void close() throws IOException {
         if (writer != null) {
             writer.close();
         }
@@ -56,21 +59,23 @@ public class TextFile {
         }
     }
 
-    private void abrirArchivo(Modo modo) throws FileNotFoundException, IOException {
+    private void openFile(Modo modo) throws FileNotFoundException, IOException, ModoAperturaIncorrectoException {
         switch (modo) {
             case READ:
-                reader = new FileReader(file);
+                reader = new FileReader(getFile());
                 break;
             case REWRITE:
-                writer = new FileWriter(file);
+                writer = new FileWriter(getFile());
                 break;
             case APPEND:
-                writer = new FileWriter(file, true);
+                writer = new FileWriter(getFile(), true);
                 break;
+            default:
+                throw new ModoAperturaIncorrectoException();
         }
     }
 
-    public String leerLinea() throws IOException, ModoAperturaIncorrectoException {
+    public String ReadLn() throws IOException, ModoAperturaIncorrectoException {
         if (modo == Modo.READ) {
             StringBuilder salida = new StringBuilder();
             int ascii = reader.read();
@@ -86,7 +91,7 @@ public class TextFile {
         throw new ModoAperturaIncorrectoException();
     }
 
-    public String leerPalabra() throws IOException, ModoAperturaIncorrectoException {
+    public String readWord() throws IOException, ModoAperturaIncorrectoException {
         if (modo == Modo.READ) {
             StringBuilder salida = new StringBuilder();
             int ascii = 0;
@@ -105,7 +110,7 @@ public class TextFile {
         throw new ModoAperturaIncorrectoException();
     }
 
-    public Character leerCaracter() throws IOException, ModoAperturaIncorrectoException {
+    public Character readChar() throws IOException, ModoAperturaIncorrectoException {
         if (modo == Modo.READ) {
             int ascii = reader.read();
             return ascii == -1 ? null : new Character((char) ascii);
@@ -123,21 +128,21 @@ public class TextFile {
         }
     }
 
-    public void escribirLinea(String text) throws IOException, ModoAperturaIncorrectoException {
+    public void writeLn(String text) throws IOException, ModoAperturaIncorrectoException {
         write(text, "%s\n");
     }
 
-    public void escribir(String text) throws IOException, ModoAperturaIncorrectoException {
+    public void write(String text) throws IOException, ModoAperturaIncorrectoException {
         write(text, "%s");
     }
 
-    public void escribir(char character) throws IOException, ModoAperturaIncorrectoException {
+    public void write(char character) throws IOException, ModoAperturaIncorrectoException {
         write(String.valueOf(character), "%s");
     }
 
     @Override
     public void finalize() throws IOException {
-        cerrar();
+        close();
     }
 
 }

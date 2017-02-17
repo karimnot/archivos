@@ -6,10 +6,13 @@
 package main;
 
 import files.exception.ModoAperturaIncorrectoException;
-import files.texto.Modo;
+import files.Modo;
 import files.texto.TextFile;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
-
 
 /**
  *
@@ -20,8 +23,31 @@ public class Main {
     /**
      * @param args the command line arguments
      */
-    public static void main(String[] args) throws IOException {
-        
+    public static void main(String[] args) {
+        try {
+
+            File file = new File("archivo.pdf");
+            FileInputStream input = new FileInputStream(file);
+
+            File file2 = new File("archivo2.pdf");
+
+            FileOutputStream output = new FileOutputStream(file2);
+
+            while (input.available() > 0) {
+                int a = input.read();
+                System.out.println(a);
+                output.write(a);
+            }
+
+            input.close();
+            output.close();
+        } catch (IOException ex) {
+            ex.printStackTrace();
+        }
+
+    }
+
+    public static void ejemploTextFile() throws IOException {
 
         TextFile text = new TextFile("test01.txt", Modo.REWRITE);
         try {
@@ -33,7 +59,6 @@ public class Main {
         }
         text.cerrar();
 
-        
         TextFile text02 = new TextFile("test01.txt", Modo.APPEND);
         try {
             text02.escribirLinea("\n Se agrega una linea más ");
@@ -43,7 +68,7 @@ public class Main {
         text02.cerrar();
 
         System.out.println("**************************");
-       
+
         TextFile text03 = new TextFile("test01.txt", Modo.READ);
         try {
             String linea = text03.leerLinea();
@@ -55,9 +80,9 @@ public class Main {
             ex.printStackTrace();
         }
         text03.cerrar();
-        
+
         System.out.println("**************************");
-       
+
         TextFile text04 = new TextFile("test01.txt", Modo.READ);
         try {
             String linea = text04.leerPalabra();
@@ -68,10 +93,10 @@ public class Main {
         } catch (ModoAperturaIncorrectoException ex) {
             ex.printStackTrace();
         }
-        text04.cerrar();        
-        
+        text04.cerrar();
+
         System.out.println("**************************");
-        
+
         TextFile text05 = new TextFile("test01.txt", Modo.READ);
         try {
             Character ch = text05.leerCaracter();
@@ -82,10 +107,7 @@ public class Main {
         } catch (ModoAperturaIncorrectoException ex) {
             ex.printStackTrace();
         }
-        text05.cerrar();  
-        
-        
-
+        text05.cerrar();
     }
 
 }

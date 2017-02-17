@@ -5,6 +5,7 @@
  */
 package files.texto;
 
+import files.Modo;
 import files.exception.ModoAperturaIncorrectoException;
 import java.io.File;
 import java.io.FileNotFoundException;

@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package files.texto;
+package files;
 
 /**
  *
@@ -12,6 +12,8 @@ package files.texto;
 public enum Modo {
     READ,
     REWRITE,
-    APPEND;
+    APPEND,
+    INPUT,
+    OUTPUT;
     
 }

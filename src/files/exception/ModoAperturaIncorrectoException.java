@@ -7,7 +7,7 @@ package files.exception;
 
 /**
  *
- * @author redoaxaca
+ * @author karimnot
  */
 public class ModoAperturaIncorrectoException extends Exception {
 

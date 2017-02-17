@@ -8,16 +8,12 @@ package main;
 import files.exception.ModoAperturaIncorrectoException;
 import files.texto.Modo;
 import files.texto.TextFile;
-import java.io.File;
-import java.io.FileReader;
-import java.io.FileWriter;
 import java.io.IOException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+
 
 /**
  *
- * @author redoaxaca
+ * @author karimnot
  */
 public class Main {
 

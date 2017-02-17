@@ -9,7 +9,7 @@ import java.io.File;
 
 /**
  *
- * @author redoaxaca
+ * @author karimnot
  */
 public abstract class FileAbstract extends File {
     

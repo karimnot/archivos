@@ -7,7 +7,7 @@ package files.texto;
 
 /**
  *
- * @author redoaxaca
+ * @author karimnot
  */
 public enum Modo {
     READ,

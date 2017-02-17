@@ -14,7 +14,7 @@ import java.io.IOException;
 
 /**
  *
- * @author redoaxaca
+ * @author karimnot
  */
 public class TextFile {
 
